@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Robber : MonoBehaviour
 {
+    [SerializeField] private Animator animator;
     private Collider _triggerDetectionCollider;
 
     private Tween _tween;
+
 
     private void Awake()
     {
@@ -22,7 +24,11 @@ public class Robber : MonoBehaviour
     {
         _tween = transform.DOPath(comingPath, GameManager.Instance.RobberFollowPathSpeed, PathType.Linear,
                 PathMode.Sidescroller2D).SetSpeedBased()
-            .OnComplete(() => { EventManager.RobberReachedToFinish(transform); });
+            .OnStart(() => { EventManager.RobberStartedToSlide?.Invoke(transform); })
+            .OnComplete(() =>
+            {
+                EventManager.RobberReachedToFinish?.Invoke(transform);
+            });
     }
 
     private void SetUseGravityStateTo(Transform comingTransform, bool state)
@@ -67,16 +73,19 @@ public class Robber : MonoBehaviour
         _triggerDetectionCollider.enabled = false;
 
         // open ragdoll
-        GetComponent<Animator>().enabled = false;
+        animator.enabled = false;
 
         // add fly effect
         var direction = (transform.position - other.transform.position).normalized;
         AddFlyForceToAllRigidbodies(transform, direction, GameManager.Instance.RobberFlyForce);
 
         // open gravity effect
-        SetUseGravityStateTo(transform,true);
-        
+        SetUseGravityStateTo(transform, true);
+
         // kill the tween
         _tween?.Kill();
+
+        // destroy after 3 seconds
+        Destroy(gameObject, 3f);
     }
 }

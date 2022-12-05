@@ -4,6 +4,7 @@ public class RopeColorChanger : MonoBehaviour
 {
     [SerializeField] private Color defaultColor;
     [SerializeField] private Color connectedColor;
+    [SerializeField] private Color slidingColor;
     
     private LineRenderer _lr;
 
@@ -16,25 +17,44 @@ public class RopeColorChanger : MonoBehaviour
     {
         EventManager.Connected += ChaneColorToConnectedColor;
         EventManager.UnConnected += ChangeColorToDefaultColor;
+        EventManager.RobberStartedToSlide += ChangeColorToSlideColor;
+        EventManager.TryChangeColorToConnectedColor += TryChangeColorToConnectedColor;
     }
 
     private void OnDisable()
     {
         EventManager.Connected -= ChaneColorToConnectedColor;
         EventManager.UnConnected -= ChangeColorToDefaultColor;
+        EventManager.RobberStartedToSlide -= ChangeColorToSlideColor;
+        EventManager.TryChangeColorToConnectedColor -= TryChangeColorToConnectedColor;
+    }
+    
+    private void ChangeLinerRendererStartAndEndColorTo(Color c)
+    {
+        _lr.startColor = c;
+        _lr.endColor = c;
     }
 
     private void ChangeColorToDefaultColor()
     {
-        _lr.startColor = defaultColor;
-        _lr.endColor = defaultColor;
+        ChangeLinerRendererStartAndEndColorTo(defaultColor);
     }
 
     private void ChaneColorToConnectedColor()
     {
-        _lr.startColor = connectedColor;
-        _lr.endColor = connectedColor;  
+        ChangeLinerRendererStartAndEndColorTo(connectedColor);
     }
-    
+
+    private void ChangeColorToSlideColor(Transform slide)
+    {
+        ChangeLinerRendererStartAndEndColorTo(slidingColor);
+    }
+
+    private void TryChangeColorToConnectedColor(int slidingRobberAmount)
+    {
+        if (slidingRobberAmount > 0) return;
+
+        ChangeLinerRendererStartAndEndColorTo(connectedColor);
+    }
     
 }
