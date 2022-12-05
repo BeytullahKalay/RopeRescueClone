@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +15,16 @@ public class RopeManager : MonoBehaviour
     private void Awake()
     {
         AddPosToRope(startPositionTransform.position);
+    }
+
+    private void OnEnable()
+    {
+        EventManager.Connected += UpdateMovePathOnGameManager;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.Connected -= UpdateMovePathOnGameManager;
     }
 
     private void Update()
@@ -66,5 +77,17 @@ public class RopeManager : MonoBehaviour
     private void LastSegmentGoToPlayerPos()
     {
         rope.SetPosition(rope.positionCount - 1, player.position);
+    }
+
+    private void UpdateMovePathOnGameManager()
+    {
+        List<Vector3> lineRendererPositions = new List<Vector3>();
+
+        for (int i = 0; i < rope.positionCount; i++)
+        {
+            lineRendererPositions.Add(rope.GetPosition(i));
+        }
+
+        GameManager.Instance.MovePath = new List<Vector3>(lineRendererPositions);
     }
 }
