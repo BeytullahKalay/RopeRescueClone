@@ -1,4 +1,5 @@
 using DG.Tweening;
+using RDG;
 using UnityEngine;
 
 
@@ -27,12 +28,12 @@ public class Robber : MonoBehaviour
             .OnStart(() =>
             {
                 EventManager.RobberStartedToSlide?.Invoke(transform);
-                Handheld.Vibrate();
+                Vibration.Vibrate(50);
             }).OnComplete(() =>
             {
                 EventManager.RobberReachedToFinish?.Invoke(transform);
                 EventManager.SortRobber?.Invoke(transform);
-                Handheld.Vibrate();
+                Vibration.Vibrate(50);
             });
     }
 
