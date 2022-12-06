@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,7 +42,7 @@ public class RopeManager : MonoBehaviour
     {
         if (Physics.Linecast(player.position, rope.GetPosition(_ropePositions.Count - 2), out var hit, collMask))
         {
-            if (_ropePositions.Count > 2 && hit.point == _ropePositions[_ropePositions.Count - 2]) return;
+            if (hit.point == _ropePositions[_ropePositions.Count - 2]) return;
 
             _ropePositions.RemoveAt(_ropePositions.Count - 1);
 
@@ -76,7 +75,11 @@ public class RopeManager : MonoBehaviour
 
     private void LastSegmentGoToPlayerPos()
     {
-        rope.SetPosition(rope.positionCount - 1, player.position);
+        var dir = (_ropePositions[^2] - player.position).normalized;
+
+        var moveAmount = .2f;
+        
+        rope.SetPosition(rope.positionCount - 1, player.position + dir * moveAmount);
     }
 
     private void UpdateMovePathOnGameManager()
