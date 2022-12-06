@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class RobberClickManager : MonoBehaviour
@@ -6,6 +9,8 @@ public class RobberClickManager : MonoBehaviour
     [SerializeField] private List<Transform> robbersOnStart;
     [SerializeField] private List<Transform> robbersSlide;
     [SerializeField] private List<Transform> robbersReached;
+
+    private IEnumerator _routine;
 
     private void OnEnable()
     {
@@ -23,15 +28,49 @@ public class RobberClickManager : MonoBehaviour
         EventManager.RobberReachedToFinish -= TryChangeColorToConnected;
     }
 
+    private void Awake()
+    {
+        _routine = RobberGroupSlide(.55f);
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && RopeStates.Instance.State == RopeStates.RopeState.Lock)
         {
             if (robbersOnStart.Count <= 0) return;
 
-            robbersOnStart[0].GetComponent<Robber>().StartFollowingPath(GameManager.Instance.MovePath.ToArray());
+            SliderRobber();
 
-            robbersOnStart.RemoveAt(0);
+            StartCoroutine(_routine);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            StopCoroutine(_routine);
+        }
+        
+    }
+
+    private void SliderRobber()
+    {
+        robbersOnStart[0].GetComponent<Robber>().StartFollowingPath(GameManager.Instance.MovePath.ToArray());
+
+        robbersOnStart.RemoveAt(0);
+    }
+
+    private IEnumerator RobberGroupSlide(float waitSeconds)
+    {
+        float t = 0;
+        
+        while (t <= waitSeconds)
+        {
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        while (t >= waitSeconds && robbersOnStart.Count > 0)
+        {
+            SliderRobber();
         }
     }
 
