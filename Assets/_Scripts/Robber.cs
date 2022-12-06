@@ -24,11 +24,15 @@ public class Robber : MonoBehaviour
     {
         _tween = transform.DOPath(comingPath, GameManager.Instance.RobberFollowPathSpeed, PathType.Linear,
                 PathMode.Sidescroller2D).SetSpeedBased()
-            .OnStart(() => { EventManager.RobberStartedToSlide?.Invoke(transform); })
-            .OnComplete(() =>
+            .OnStart(() =>
+            {
+                EventManager.RobberStartedToSlide?.Invoke(transform);
+                Handheld.Vibrate();
+            }).OnComplete(() =>
             {
                 EventManager.RobberReachedToFinish?.Invoke(transform);
                 EventManager.SortRobber?.Invoke(transform);
+                Handheld.Vibrate();
             });
     }
 
