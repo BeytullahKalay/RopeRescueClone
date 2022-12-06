@@ -26,5 +26,11 @@ public class LevelManager : MonoBehaviour
             Debug.Log("Level Completed");
             Enums.Instance.GameState = Enums.GameStates.End;
         }
+        
+        EventManager.UpdateSignText?.Invoke();
     }
+
+
+    public int DesEscapedRobberNumber => desEscapedRobberNumber;
+    public int EscapedRobberNumber => escapedRobberNumber;
 }
