@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class RopeStates : MonoBehaviour
+public class Enums : MonoBehaviour
 {
     #region Singleton
 
-    public static RopeStates Instance;
+    public static Enums Instance;
 
     private void Awake()
     {
@@ -32,21 +32,29 @@ public class RopeStates : MonoBehaviour
         EventManager.UnConnected -= FreeRopeState;
     }
 
-    public enum RopeState
+    
+    public RopeStates RopeState;
+    public enum RopeStates
     {
         Free,
         Lock
     }
 
-    public RopeState State;
+    public GameStates GameState;
+    public enum GameStates
+    {
+        Play,
+        End
+    }
+
 
     private void LockRopeState()
     {
-        State = RopeState.Lock;
+        RopeState = RopeStates.Lock;
     }
 
     private void FreeRopeState()
     {
-        State = RopeState.Free;
+        RopeState = RopeStates.Free;
     }
 }

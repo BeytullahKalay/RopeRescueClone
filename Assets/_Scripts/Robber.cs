@@ -64,6 +64,8 @@ public class Robber : MonoBehaviour
             Debug.Log("Obstacle DETECTED!!");
 
             TriggerActions(other);
+            
+            EventManager.CheckIsGameOver?.Invoke();
         }
     }
 
@@ -84,8 +86,13 @@ public class Robber : MonoBehaviour
 
         // kill the tween
         _tween?.Kill();
+        
+        // remove from sliding list
+        EventManager.RemoveFromSlidingList?.Invoke(transform);
 
-        // destroy after 3 seconds
-        Destroy(gameObject, 3f);
+        // destroy after 2 seconds
+        Destroy(gameObject, 2f);
     }
+    
+    
 }

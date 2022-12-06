@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class RobberClickManager : MonoBehaviour
@@ -15,17 +13,27 @@ public class RobberClickManager : MonoBehaviour
     private void OnEnable()
     {
         EventManager.RobberStartedToSlide += AddRobberSlidingRobberToSlidingList;
+        
         EventManager.RobberReachedToFinish += AddReachedRobberToReachedList;
         EventManager.RobberReachedToFinish += RemoveSlidingRobberFromList;
         EventManager.RobberReachedToFinish += TryChangeColorToConnected;
+        
+        EventManager.RemoveFromSlidingList += RemoveSlidingRobberFromList;
+
+        EventManager.CheckIsGameOver += CheckIsGameOver;
     }
 
     private void OnDisable()
     {
         EventManager.RobberStartedToSlide -= AddRobberSlidingRobberToSlidingList;
+       
         EventManager.RobberReachedToFinish -= AddReachedRobberToReachedList;
         EventManager.RobberReachedToFinish -= RemoveSlidingRobberFromList;
         EventManager.RobberReachedToFinish -= TryChangeColorToConnected;
+        
+        EventManager.RemoveFromSlidingList -= RemoveSlidingRobberFromList;
+        
+        EventManager.CheckIsGameOver -= CheckIsGameOver;
     }
 
     private void Awake()
@@ -35,7 +43,7 @@ public class RobberClickManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && RopeStates.Instance.State == RopeStates.RopeState.Lock)
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Enums.Instance.RopeState == Enums.RopeStates.Lock)
         {
             if (robbersOnStart.Count <= 0) return;
 
@@ -92,5 +100,16 @@ public class RobberClickManager : MonoBehaviour
     private void TryChangeColorToConnected(Transform robber)
     {
         EventManager.TryChangeColorToConnectedColor?.Invoke(robbersSlide.Count);
+    }
+
+    private void CheckIsGameOver()
+    {
+        if (Enums.Instance.GameState == Enums.GameStates.Play)
+        {
+            if (robbersSlide.Count <= 0 && robbersOnStart.Count <= 0)
+            {
+                Debug.Log("Game Over");
+            }
+        }
     }
 }
