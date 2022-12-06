@@ -28,6 +28,7 @@ public class Robber : MonoBehaviour
             .OnComplete(() =>
             {
                 EventManager.RobberReachedToFinish?.Invoke(transform);
+                EventManager.SortRobber?.Invoke(transform);
             });
     }
 

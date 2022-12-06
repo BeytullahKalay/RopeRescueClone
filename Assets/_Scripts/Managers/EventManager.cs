@@ -12,7 +12,7 @@ public static class EventManager
     public static Action<Transform> RobberStartedToSlide;
     public static Action<Transform> RobberReachedToFinish;
     public static Action<Transform> RemoveFromSlidingList;
-
+    public static Action<Transform> SortRobber;
 
     public static Action<int> TryChangeColorToConnectedColor;
 
