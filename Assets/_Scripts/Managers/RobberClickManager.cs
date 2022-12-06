@@ -72,7 +72,6 @@ public class RobberClickManager : MonoBehaviour
             _tween2 = DOTween.To(() => t2, x => t2 = x, 1, waitTimeBetweenSpeedSlides).
                 SetLoops(-1, LoopType.Restart).OnStepComplete(() =>
                 {
-                    Debug.Log("HERE!");
                     SliderRobber();
                     t2 = 0;
                 });
@@ -106,6 +105,7 @@ public class RobberClickManager : MonoBehaviour
             if (robbersSlide.Count <= 0 && robbersOnStart.Count <= 0)
             {
                 Debug.Log("Game Over");
+                EventManager.LevelFailed?.Invoke();
             }
         }
     }

@@ -21,10 +21,11 @@ public class LevelManager : MonoBehaviour
     {
         escapedRobberNumber++;
 
-        if (escapedRobberNumber >= desEscapedRobberNumber)
+        if (escapedRobberNumber >= desEscapedRobberNumber && Enums.Instance.GameState != Enums.GameStates.End)
         {
-            Debug.Log("Level Completed");
             Enums.Instance.GameState = Enums.GameStates.End;
+            Debug.Log("Level Completed");
+            EventManager.LevelCompleted?.Invoke();
         }
         
         EventManager.UpdateSignText?.Invoke();

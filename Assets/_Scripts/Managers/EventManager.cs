@@ -8,6 +8,9 @@ public static class EventManager
     public static Action CheckIsGameOver;
     public static Action UpdateSignText;
 
+    public static Action LevelCompleted;
+    public static Action LevelFailed;
+
 
     public static Action<Transform> RobberStartedToSlide;
     public static Action<Transform> RobberReachedToFinish;

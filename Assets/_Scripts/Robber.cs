@@ -23,7 +23,7 @@ public class Robber : MonoBehaviour
     public void StartFollowingPath(Vector3[] comingPath)
     {
         _tween = transform.DOPath(comingPath, GameManager.Instance.RobberFollowPathSpeed, PathType.Linear,
-                PathMode.Sidescroller2D).SetSpeedBased()
+                PathMode.Sidescroller2D)//.SetSpeedBased()
             .OnStart(() =>
             {
                 EventManager.RobberStartedToSlide?.Invoke(transform);
