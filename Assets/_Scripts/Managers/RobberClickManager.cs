@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class RobberClickManager : MonoBehaviour
@@ -8,16 +8,17 @@ public class RobberClickManager : MonoBehaviour
     [SerializeField] private List<Transform> robbersSlide;
     [SerializeField] private List<Transform> robbersReached;
 
-    private IEnumerator _routine;
+    private Tween _tween1;
+    private Tween _tween2;
 
     private void OnEnable()
     {
         EventManager.RobberStartedToSlide += AddRobberSlidingRobberToSlidingList;
-        
+
         EventManager.RobberReachedToFinish += AddReachedRobberToReachedList;
         EventManager.RobberReachedToFinish += RemoveSlidingRobberFromList;
         EventManager.RobberReachedToFinish += TryChangeColorToConnected;
-        
+
         EventManager.RemoveFromSlidingList += RemoveSlidingRobberFromList;
 
         EventManager.CheckIsGameOver += CheckIsGameOver;
@@ -26,19 +27,14 @@ public class RobberClickManager : MonoBehaviour
     private void OnDisable()
     {
         EventManager.RobberStartedToSlide -= AddRobberSlidingRobberToSlidingList;
-       
+
         EventManager.RobberReachedToFinish -= AddReachedRobberToReachedList;
         EventManager.RobberReachedToFinish -= RemoveSlidingRobberFromList;
         EventManager.RobberReachedToFinish -= TryChangeColorToConnected;
-        
-        EventManager.RemoveFromSlidingList -= RemoveSlidingRobberFromList;
-        
-        EventManager.CheckIsGameOver -= CheckIsGameOver;
-    }
 
-    private void Awake()
-    {
-        _routine = RobberGroupSlide(.55f);
+        EventManager.RemoveFromSlidingList -= RemoveSlidingRobberFromList;
+
+        EventManager.CheckIsGameOver -= CheckIsGameOver;
     }
 
     private void Update()
@@ -49,14 +45,14 @@ public class RobberClickManager : MonoBehaviour
 
             SliderRobber();
 
-            StartCoroutine(_routine);
+            RobberGroupSlide(.5f, .1f);
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            StopCoroutine(_routine);
+            _tween1?.Kill();
+            _tween2?.Kill();
         }
-        
     }
 
     private void SliderRobber()
@@ -66,20 +62,21 @@ public class RobberClickManager : MonoBehaviour
         robbersOnStart.RemoveAt(0);
     }
 
-    private IEnumerator RobberGroupSlide(float waitSeconds)
+    private void RobberGroupSlide(float waitSeconds, float waitTimeBetweenSpeedSlides)
     {
         float t = 0;
-        
-        while (t <= waitSeconds)
-        {
-            t += Time.deltaTime;
-            yield return null;
-        }
+        float t2 = 0;
 
-        while (t >= waitSeconds && robbersOnStart.Count > 0)
+        _tween1 = DOTween.To(() => t, x => t = x, 1, waitSeconds).OnComplete(() =>
         {
-            SliderRobber();
-        }
+            _tween2 = DOTween.To(() => t2, x => t2 = x, 1, waitTimeBetweenSpeedSlides).
+                SetLoops(-1, LoopType.Restart).OnStepComplete(() =>
+                {
+                    Debug.Log("HERE!");
+                    SliderRobber();
+                    t2 = 0;
+                });
+        });
     }
 
     private void AddReachedRobberToReachedList(Transform robber)
