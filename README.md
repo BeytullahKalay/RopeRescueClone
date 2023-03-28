@@ -5,4 +5,4 @@ Transport people from one point to another on a rope slide!
 ## Game Link
 You can download game easily from [My Itch.io](https://beytullahkalay1.itch.io/)
 
-![test](unnamed.jpg)
+![Original Game Image](unnamed.jpg)
